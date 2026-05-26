@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PilahPilih AI - Kelola Sampah Jadi Mudah</title>
+    <!-- Tailwind CSS untuk Desain Modern -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- TensorFlow.js dan MobileNet untuk AI Scan -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER & NAVBAR -->
+    <header class="bg-emerald-600 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                🌱 PilahPilih<span class="bg-emerald-800 text-xs px-2 py-0.5 rounded-full">AI v1.0</span>
+            </h1>
+            <nav class="hidden md:flex gap-6 text-sm font-medium">
+                <a href="#scanner" class="hover:text-emerald-200 transition">AI Scanner</a>
+                <a href="#panduan" class="hover:text-emerald-200 transition">Panduan 3 Ember</a>
+                <a href="#komunitas" class="hover:text-emerald-200 transition">Gerakan Komunitas</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        <div class="text-center my-6">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-emerald-900 tracking-tight">
+                Mulai Pilah Sampah dari Hal Kecil
+            </h2>
+            <p class="mt-2 text-stone-600 max-w-xl mx-auto text-sm md:text-base">
+                Bingung sampah ini masuk kategori mana? Izinkan AI kami mendeteksinya. Arahkan kamera, scan, dan kelompokkan!
+            </p>
+        </div>
+
+        <!-- INTERACTIVE AI SCANNER SECTION -->
+        <section id="scanner" class="bg-white rounded-2xl shadow-xl p-6 border border-stone-200 mb-12">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <h3 class="text-lg font-bold text-stone-900">AI Trash Scanner (Google Lens Style)</h3>
+            </div>
+
+            <!-- Kamera Box -->
+            <div class="relative bg-stone-900 rounded-xl overflow-hidden aspect-video max-w-md mx-auto flex items-center justify-center border-4 border-stone-800 shadow-inner">
+                <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                
+                <!-- Tampilan Awal Sebelum Kamera Aktif -->
+                <div id="placeholder" class="text-center p-6 text-stone-400">
+                    <span class="text-4xl block mb-2">📸</span>
+                    <p class="text-sm">Kamera belum aktif</p>
+                </div>
+
+                <!-- Overlay Scanner Efek -->
+                <div id="scannerLine" class="absolute inset-x-0 top-0 h-0.5 bg-emerald-400 opacity-70 shadow-[0_0_8px_#34d399] hidden animate-[bounce_2s_infinite]"></div>
+            </div>
+
+            <!-- Kontrol Tombol -->
+            <div class="flex flex-wrap justify-center gap-3 mt-6">
+                <button id="btnStart" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition text-sm flex items-center gap-2">
+                    🔌 Aktifkan Kamera AI
+                </button>
+                <button id="btnScan" disabled class="bg-stone-300 text-stone-500 font-medium px-6 py-2.5 rounded-lg shadow transition text-sm flex items-center gap-2 cursor-not-allowed">
+                    🔍 Scan Objek
+                </button>
+            </div>
+
+            <!-- Hasil Deteksi AI -->
+            <div id="resultBox" class="mt-6 p-4 rounded-xl border border-dashed border-stone-300 bg-stone-50 hidden max-w-md mx-auto">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-1">Hasil Analisis AI:</h4>
+                <p class="text-lg font-bold text-stone-800">Mendeteksi: <span id="detectedObject" class="text-emerald-700 text-xl font-extrabold">...</span></p>
+                
+                <!-- Rekomendasi Ember Sampah -->
+                <div id="recommendation" class="mt-4 p-3 rounded-lg flex items-center gap-3 text-sm">
+                    <span id="binIcon" class="text-2xl">🗑️</span>
+                    <div>
+                        <p class="font-bold text-stone-900" id="binCategory">Kategori: -</p>
+                        <p class="text-xs text-stone-600 mt-0.5" id="binAction">Instruksi tindakan akan muncul di sini.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANDUAN 3 EMBER UTAMA -->
+        <section id="panduan" class="mb-12">
+            <h3 class="text-xl font-bold text-stone-900 mb-6 text-center">Panduan Dasar 3 Ember untuk Pemula</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Organik -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-green-500">
+                    <div class="text-3xl mb-2">🟢</div>
+                    <h4 class="font-bold text-green-800 text-lg">Ember Hijau (Organik)</h4>
+                    <p class="text-xs text-stone-600 mt-1 leading-relaxed">Sisa dapur, sisa makanan, kulit buah, dan daun kering.</p>
+                    <span class="inline-block mt-3 bg-green-50 text-green-700 text-xs px-2 py-1 rounded font-medium">✨ Tips: Bisa dijadikan pupuk kompos!</span>
+                </div>
+                <!-- Anorganik -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-amber-500">
+                    <div class="text-3xl mb-2">🟡</div>
+                    <h4 class="font-bold text-amber-800 text-lg">Ember Kuning (Daur Ulang)</h4>
+                    <p class="text-xs text-stone-600 mt-1 leading-relaxed">Botol plastik, kardus, kaleng soda, kertas, kertas koran.</p>
+                    <span class="inline-block mt-3 bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded font-medium">✨ Tips: Pastikan kosong, bilas, keringkan!</span>
+                </div>
+                <!-- Residu -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-red-500">
+                    <div class="text-3xl mb-2">🔴</div>
+                    <h4 class="font-bold text-red-800 text-lg">Ember Merah (Residu/B3)</h4>
+                    <p class="text-xs text-stone-600 mt-1 leading-relaxed">Sticker, tisu basah, popok, masker bekas, puntung rokok.</p>
+                    <span class="inline-block mt-3 bg-red-50 text-red-700 text-xs px-2 py-1 rounded font-medium">⚠️ Peringatan: Langsung dibuang ke TPA.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- GERAKAN KOMUNITAS KECIL -->
+        <section id="komunitas" class="bg-emerald-900 text-emerald-50 rounded-2xl p-6 md:p-8 shadow-lg">
+            <h3 class="text-xl font-bold mb-2">💡 Cara Mengorganisir Kelompok di Sekitarmu</h3>
+            <p class="text-emerald-200 text-sm mb-6 max-w-xl">Memilah sendiri itu baik, tapi memilah bersama tetangga atau teman kelas dampaknya 10x lipat lebih besar!</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
+                <div class="bg-emerald-800/50 p-4 rounded-lg border border-emerald-700/50">
+                    <strong class="block text-emerald-300 mb-1">1. Buat Tim Kecil (3-5 Orang)</strong>
+                    Cari teman sekelas atau tetangga rumah yang satu frekuensi untuk jadi penggerak awal.
+                </div>
+                <div class="bg-emerald-800/50 p-4 rounded-lg border border-emerald-700/50">
+                    <strong class="block text-emerald-300 mb-1">2. Sepakati Lokasi Drop Box</strong>
+                    Sediakan 3 wadah (Ember Hijau, Kuning, Merah) di satu titik strategis, misalnya di pojok kelas atau pos ronda.
+                </div>
+                <div class="bg-emerald-800/50 p-4 rounded-lg border border-emerald-700/50">
+                    <strong class="block text-emerald-300 mb-1">3. Atur Jadwal Setor</strong>
+                    Tentukan satu hari dalam seminggu (misal: Sabtu Pagi) untuk mengumpulkan sampah ember kuning ke Bank Sampah terdekat.
+                </div>
+                <div class="bg-emerald-800/50 p-4 rounded-lg border border-emerald-700/50">
+                    <strong class="block text-emerald-300 mb-1">4. Berikan Apresiasi / Log</strong>
+                    Catat siapa saja yang rajin memilah. Kelompok kecil yang sukses biasanya punya rekapitulasi data yang transparan!
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-800 text-stone-400 text-center py-4 text-xs border-t border-stone-700 mt-12">
+        <p>&copy; 2026 Developer Muda Peduli Lingkungan. Powered by TensorFlow.js MobileNet AI Model.</p>
+    </footer>
+
+    <!-- LOGIKA JAVASCRIPT & AI ENGINE -->
+    <script>
+        const video = document.getElementById('webcam');
+        const placeholder = document.getElementById('placeholder');
+        const btnStart = document.getElementById('btnStart');
+        const btnScan = document.getElementById('btnScan');
+        const scannerLine = document.getElementById('scannerLine');
+        const resultBox = document.getElementById('resultBox');
+        const detectedObject = document.getElementById('detectedObject');
+        
+        const recommendation = document.getElementById('recommendation');
+        const binIcon = document.getElementById('binIcon');
+        const binCategory = document.getElementById('binCategory');
+        const binAction = document.getElementById('binAction');
+
+        let model = null;
+
+        // 1. Load AI Model di background saat web dibuka
+        async function loadAIModel() {
+            btnStart.innerText = "⏳ Memuat AI Engine...";
+            btnStart.disabled = true;
+            model = await mobilenet.load();
+            btnStart.innerText = "🔌 Aktifkan Kamera AI";
+            btnStart.disabled = false;
+            console.log("TensorFlow MobileNet Model Berhasil Dimuat!");
+        }
+        loadAIModel();
+
+        // 2. Mengaktifkan Kamera HP/Laptop
+        btnStart.addEventListener('click', async () => {
+            if (!model) {
+                alert("Sabar ya, AI sedang memuat data.");
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } // Mengutamakan kamera belakang kalau di HP
+                });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                scannerLine.classList.remove('hidden');
+                
+                // Aktifkan tombol scan
+                btnScan.disabled = false;
+                btnScan.classList.remove('bg-stone-300', 'text-stone-500', 'cursor-not-allowed');
+                btnScan.classList.add('bg-amber-500', 'hover:bg-amber-600', 'text-stone-900');
+                
+                btnStart.innerText = "✅ Kamera Aktif";
+                btnStart.disabled = true;
+            } catch (err) {
+                alert("Gagal mengakses kamera. Pastikan izin kamera sudah diberikan ya!");
+                console.error(err);
+            }
+        });
+
+        // 3. Logika Men-Scan Objek Menggunakan AI Model
+        btnScan.addEventListener('click', async () => {
+            if (!model) return;
+
+            // Beri efek scan kedip sebentar
+            scannerLine.classList.add('bg-white');
+            setTimeout(() => scannerLine.classList.remove('bg-white'), 150);
+
+            // Prediksi objek dari frame video saat ini
+            const predictions = await model.classify(video);
+            
+            if (predictions && predictions.length > 0) {
+                // Ambil hasil tebakan teratas dari model AI
+                const topResult = predictions[0].className.toLowerCase();
+                detectedObject.innerText = predictions[0].className.split(',')[0]; // Ambil kata pertama
+                resultBox.classList.remove('hidden');
+                
+                // Jalankan fungsi sorting kategori berdasarkan teks prediksi objek
+                sortTrashCategory(topResult);
+            }
+        });
+
+        // 4. Aturan Pemilahan Sederhana (Rule-Based dari Hasil AI)
+        function sortTrashCategory(objectName) {
+            // Kamus kata kunci bahasa inggris karena bawaan model MobileNet berbahasa Inggris
+            const organicKeywords = ['banana', 'apple', 'orange', 'fruit', 'vegetable', 'food', 'meat', 'bread', 'leaf', 'potatoes'];
+            const inorganicKeywords = ['bottle', 'can', 'box', 'carton', 'cup', 'paper', 'cardboard', 'plastic', 'glass', 'container', 'packet'];
+
+            // Cek kecocokan kata kunci
+            const isOrganic = organicKeywords.some(keyword => objectName.includes(keyword));
+            const isInorganic = inorganicKeywords.some(keyword => objectName.includes(keyword));
+
+            // Reset kelas warna rekomendasi box
+            recommendation.className = "mt-4 p-3 rounded-lg flex items-center gap-3 text-sm ";
+
+            if (isOrganic) {
+                binIcon.innerText = "🟢";
+                binCategory.innerText = "Kategori: EMBER HIJAU (Organik)";
+                binAction.innerText = "Sampah organik terdeteksi. Silakan masukkan ke wadah kompos atau tong sampah sisa makanan rumah tangga.";
+                recommendation.classList.add('bg-green-50', 'text-green-800', 'border', 'border-green-200');
+            } else if (isInorganic) {
+                binIcon.innerText = "🟡";
+                binCategory.innerText = "Kategori: EMBER KUNING (Anorganik / Daur Ulang)";
+                binAction.innerText = "Objek ini bernilai daur ulang! Pastikan kondisinya kosong, bilas jika kotor, lalu kempeskan sebelum disetor ke kelompok penampung.";
+                recommendation.classList.add('bg-amber-50', 'text-amber-800', 'border', 'border-amber-200');
+            } else {
+                // Default masuk residu jika tidak yakin/tidak terdaftar di kamus atas
+                binIcon.innerText = "🔴";
+                binCategory.innerText = "Kategori: EMBER MERAH (Residu / B3 / Raguan)";
+                binAction.innerText = "Model mendeteksi objek umum non-organik/residu. Masukkan ke tong sampah residu jika sulit didaur ulang secara manual di lingkungan sekitar.";
+                recommendation.classList.add('bg-red-50', 'text-red-800', 'border', 'border-red-200');
+            }
+        }
+    </script>
+</body>
+</html>
